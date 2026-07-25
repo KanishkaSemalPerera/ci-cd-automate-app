@@ -17,40 +17,40 @@ jobs:
           extensions: mbstring, dom, fileinfo, mysql, sqlite3
           coverage: none
 
-      # - name: Copy .env
-      #   run: cp .env.example .env
+      - name: Copy .env
+        run: cp .env.example .env
 
-      # - name: Install Composer dependencies
-      #   run: composer install --no-progress --prefer-dist --optimize-autoloader
+      - name: Install Composer dependencies
+        run: composer install --no-progress --prefer-dist --optimize-autoloader
 
-      # - name: Generate application key
-      #   run: php artisan key:generate
+      - name: Generate application key
+        run: php artisan key:generate
 
-      # - name: Setup Node
-      #   uses: actions/setup-node@v4
-      #   with:
-      #     node-version: '20'
-      #     cache: 'npm'
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
 
-      # - name: Install NPM dependencies
-      #   run: npm ci
+      - name: Install NPM dependencies
+        run: npm ci
 
-      # - name: Build frontend assets
-      #   run: npm run build
+      - name: Build frontend assets
+        run: npm run build
 
-      # - name: Directory permissions
-      #   run: chmod -R 777 storage bootstrap/cache
+      - name: Directory permissions
+        run: chmod -R 777 storage bootstrap/cache
 
-      # - name: Run migrations
-      #   env:
-      #     DB_CONNECTION: sqlite
-      #     DB_DATABASE: database/database.sqlite
-      #   run: |
-      #     touch database/database.sqlite
-      #     php artisan migrate --force
+      - name: Run migrations
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: database/database.sqlite
+        run: |
+          touch database/database.sqlite
+          php artisan migrate --force
 
-      # - name: Run tests
-      #   env:
-      #     DB_CONNECTION: sqlite
-      #     DB_DATABASE: database/database.sqlite
-      #   run: php artisan test
+      - name: Run tests
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: database/database.sqlite
+        run: php artisan test
