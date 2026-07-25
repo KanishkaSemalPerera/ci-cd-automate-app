@@ -1,54 +1,70 @@
-name: Laravel CI
+# Name of this GitHub Actions workflow
+name: Laravel CI  
 
+# Run this workflow when someone pushes code or creates a pull request
 on: [push, pull_request]
 
+# Define the jobs that will run
 jobs:
-  test:
-    runs-on: ubuntu-latest
+  test:  # Job name: test Laravel application
+    runs-on: ubuntu-latest  # Use Ubuntu Linux server to run the CI process
 
     steps:
+     # Step 1: Download project code from GitHub repository
       - name: Checkout code
         uses: actions/checkout@v4
 
+     # Step 2: Install PHP environment for Laravel
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
+          php-version: '8.2' # Laravel PHP version
+          # Install required PHP extensions
           extensions: mbstring, dom, fileinfo, mysql, sqlite3
-          coverage: none
+          coverage: none # Disable code coverage to make CI faster
 
+        # Step 3: Create .env configuration file
       - name: Copy .env
         run: cp .env.example .env
-
+      
+         # Step 4: Install Laravel backend packages using Composer
       - name: Install Composer dependencies
         run: composer install --no-progress --prefer-dist --optimize-autoloader
-
+       
+        # Step 5: Create Laravel application encryption key
       - name: Generate application key
         run: php artisan key:generate
 
+        # Step 6: Install Node.js for frontend build
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-
+        
+        # Step 7: Install frontend packages
       - name: Install NPM dependencies
         run: npm ci
-
+      
+        # Step 8: Build frontend files (CSS, JavaScript)
       - name: Build frontend assets
         run: npm run build
-
+       
+       # Step 9: Give Laravel permission to write files
       - name: Directory permissions
         run: chmod -R 777 storage bootstrap/cache
 
+       # Step 10: Create database and run Laravel migrations
       - name: Run migrations
         env:
+        # Use SQLite database for testing
           DB_CONNECTION: sqlite
           DB_DATABASE: database/database.sqlite
         run: |
           touch database/database.sqlite
           php artisan migrate --force
-
+    
+        # Step 11: Run Laravel automated tests
       - name: Run tests
         env:
           DB_CONNECTION: sqlite
